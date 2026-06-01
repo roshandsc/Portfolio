@@ -135,12 +135,14 @@ function SkillChip({
   color,
   colorRgb,
   i,
+  isMobile,
 }: {
   name: string;
   level: number;
   color: string;
   colorRgb: string;
   i: number;
+  isMobile?: boolean;
 }) {
   const [hov, setHov] = useState(false);
   return (
@@ -153,9 +155,9 @@ function SkillChip({
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "8px",
-        padding: "8px 14px",
-        borderRadius: "12px",
+        gap: isMobile ? "6px" : "8px",
+        padding: isMobile ? "6px 10px" : "8px 14px",
+        borderRadius: isMobile ? "10px" : "12px",
         background: hov ? `rgba(${colorRgb},0.12)` : "rgba(255,255,255,0.04)",
         border: `1px solid ${hov ? `rgba(${colorRgb},0.35)` : "rgba(255,255,255,0.07)"}`,
         transition: "all 0.22s ease",
@@ -164,13 +166,13 @@ function SkillChip({
       }}
     >
       <CheckCircle2
-        size={12}
+        size={isMobile ? 11 : 12}
         style={{ color, flexShrink: 0, opacity: hov ? 1 : 0.5, transition: "opacity 0.2s" }}
         strokeWidth={2.5}
       />
       <span
         style={{
-          fontSize: "13px",
+          fontSize: isMobile ? "11.5px" : "13px",
           fontWeight: 550,
           color: hov ? "#fff" : "rgba(255,255,255,0.72)",
           fontFamily: "var(--font-jakarta)",
@@ -183,7 +185,7 @@ function SkillChip({
       <span
         style={{
           marginLeft: "2px",
-          fontSize: "10px",
+          fontSize: isMobile ? "9.5px" : "10px",
           fontWeight: 700,
           color: hov ? color : "rgba(255,255,255,0.25)",
           fontFamily: "var(--font-jakarta)",
@@ -227,6 +229,7 @@ function DomainCard({
 }) {
   const [hov, setHov] = useState(false);
   const [hasHover, setHasHover] = useState(false);
+  const isActiveMobile = layoutMode === "mobile" && activeIndex === index;
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(hover: hover)");
@@ -239,8 +242,8 @@ function DomainCard({
   const IconA = domain.icons[0];
   const IconB = domain.icons[1];
 
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
+  const mx = useMotionValue(200);
+  const my = useMotionValue(140);
 
   const sx = useSpring(mx, { stiffness: 150, damping: 25 });
   const sy = useSpring(my, { stiffness: 150, damping: 25 });
@@ -387,8 +390,8 @@ function DomainCard({
       }
     }
   } else if (layoutMode === "mobile") {
-    cardWidth = "calc(100vw - 48px)";
-    cardHeight = "235px";
+    cardWidth = "calc(100vw - 40px)";
+    cardHeight = "290px";
 
     const currentActive = activeIndex ?? 0;
     const offsetIndex = index - currentActive;
@@ -436,7 +439,7 @@ function DomainCard({
 
   const glassBackground = isOpen
     ? `linear-gradient(135deg, rgba(${domain.colorRgb}, 0.12) 0%, rgba(10, 10, 15, 0.96) 60%)`
-    : hov
+    : (hov || isActiveMobile)
     ? `linear-gradient(135deg, rgba(${domain.colorRgb}, 0.06) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(5, 5, 5, 0.95) 90%)`
     : `linear-gradient(135deg, rgba(${domain.colorRgb}, 0.03) 0%, rgba(255, 255, 255, 0.01) 30%, rgba(5, 5, 5, 0.94) 80%)`;
 
@@ -487,7 +490,7 @@ function DomainCard({
       style={{
         position: "absolute",
         width: cardWidth,
-        maxWidth: layoutMode === "mobile" ? "305px" : undefined,
+        maxWidth: layoutMode === "mobile" ? "340px" : undefined,
         height: isOpen ? "auto" : cardHeight,
         zIndex: zIndex,
         transformStyle: "preserve-3d",
@@ -510,18 +513,21 @@ function DomainCard({
         }}
         style={{
           position: "relative",
+          height: isOpen ? "auto" : "100%",
+          maxHeight: layoutMode === "mobile" && isOpen ? "340px" : undefined,
+          overflowY: layoutMode === "mobile" && isOpen ? "auto" : "hidden",
+          overflowX: "hidden",
           borderRadius: "28px",
-          padding: layoutMode === "mobile" ? "24px 24px 20px" : "28px 28px 24px",
+          padding: layoutMode === "mobile" ? "20px 20px 18px" : "28px 28px 24px",
           background: glassBackground,
           border: "1px solid rgba(255, 255, 255, 0.035)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
           cursor: "pointer",
-          overflow: "hidden",
           transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
           boxShadow: isOpen
             ? `0 30px 70px rgba(0,0,0,0.65), 0 0 50px rgba(${domain.colorRgb},0.18)`
-            : hov
+            : (hov || isActiveMobile)
             ? `0 20px 45px rgba(0,0,0,0.5), 0 0 25px rgba(${domain.colorRgb},0.1)`
             : "0 8px 30px rgba(0,0,0,0.3)",
           transformStyle: "preserve-3d",
@@ -534,7 +540,7 @@ function DomainCard({
           style={{
             position: "absolute", inset: 0,
             background: spotlightBg, pointerEvents: "none",
-            opacity: hov || isOpen ? 1 : 0,
+            opacity: hov || isOpen || isActiveMobile ? 1 : 0,
             transition: "opacity 0.3s ease", zIndex: 0,
             transform: "translateZ(1px)",
           }}
@@ -545,7 +551,7 @@ function DomainCard({
           style={{
             position: "absolute", inset: 0,
             background: glareBg, pointerEvents: "none",
-            opacity: hov ? 1 : 0,
+            opacity: hov || isActiveMobile ? 1 : 0,
             transition: "opacity 0.3s ease", zIndex: 10,
             mixBlendMode: "overlay",
             transform: "translateZ(2px)",
@@ -594,7 +600,7 @@ function DomainCard({
           style={{
             position: "absolute", top: 0, left: 0, right: 0, height: "2px",
             background: domain.color,
-            transform: `scaleX(${isOpen || hov ? 1 : 0}) translateZ(10px)`,
+            transform: `scaleX(${isOpen || hov || isActiveMobile ? 1 : 0}) translateZ(10px)`,
             transformOrigin: "left",
             transition: "transform 0.38s cubic-bezier(0.16,1,0.3,1)",
             zIndex: 2,
@@ -602,35 +608,45 @@ function DomainCard({
         />
 
         <div style={{ position: "relative", zIndex: 3, transformStyle: "preserve-3d" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "18px", transformStyle: "preserve-3d" }}>
-            <div style={{ display: "flex", gap: "8px", transformStyle: "preserve-3d" }}>
+          <div style={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            marginBottom: layoutMode === "mobile" ? "12px" : "18px",
+            transformStyle: "preserve-3d",
+          }}>
+            <div style={{ display: "flex", gap: layoutMode === "mobile" ? "6px" : "8px", transformStyle: "preserve-3d" }}>
               {[IconA, IconB].map((Ic, ii) => (
                 <motion.div
                   key={ii}
-                  animate={{ scale: hov || isOpen ? 1.08 : 1 }}
+                  animate={{ scale: hov || isOpen || isActiveMobile ? 1.08 : 1 }}
                   transition={{ duration: 0.25, delay: ii * 0.05 }}
                   style={{
-                    width: "42px", height: "42px", borderRadius: "12px",
+                    width: layoutMode === "mobile" ? "36px" : "42px",
+                    height: layoutMode === "mobile" ? "36px" : "42px",
+                    borderRadius: layoutMode === "mobile" ? "10px" : "12px",
                     background: `rgba(${domain.colorRgb},0.1)`,
                     border: `1px solid rgba(${domain.colorRgb},0.2)`,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     transform: "translateZ(30px)",
                   }}
                 >
-                  <Ic size={18} style={{ color: domain.color }} strokeWidth={1.75} />
+                  <Ic size={layoutMode === "mobile" ? 15 : 18} style={{ color: domain.color }} strokeWidth={1.75} />
                 </motion.div>
               ))}
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", transformStyle: "preserve-3d" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: layoutMode === "mobile" ? "8px" : "10px", transformStyle: "preserve-3d" }}>
               <div style={{
-                padding: "4px 10px", borderRadius: "999px",
+                padding: layoutMode === "mobile" ? "3px 8px" : "4px 10px",
+                borderRadius: "999px",
                 background: `rgba(${domain.colorRgb},0.1)`,
                 border: `1px solid rgba(${domain.colorRgb},0.2)`,
                 transform: "translateZ(25px)",
               }}>
                 <span style={{
-                  fontSize: "10px", fontWeight: 700, letterSpacing: "0.06em",
+                  fontSize: layoutMode === "mobile" ? "9px" : "10px",
+                  fontWeight: 700, letterSpacing: "0.06em",
                   textTransform: "uppercase", color: domain.color,
                   fontFamily: "var(--font-jakarta)",
                 }}>
@@ -645,7 +661,7 @@ function DomainCard({
                   style={{ transform: "translateZ(25px)" }}
                 >
                   <ChevronDown
-                    size={18}
+                    size={layoutMode === "mobile" ? 16 : 18}
                     strokeWidth={2}
                     style={{ color: isOpen ? domain.color : "rgba(255,255,255,0.35)" }}
                   />
@@ -655,24 +671,30 @@ function DomainCard({
           </div>
 
           <h3 style={{
-            fontSize: layoutMode === "mobile" ? "18px" : "20px", fontWeight: 750, letterSpacing: "-0.02em",
-            color: "#ffffff", margin: "0 0 4px",
+            fontSize: layoutMode === "mobile" ? "16px" : "20px", fontWeight: 750, letterSpacing: "-0.02em",
+            color: "#ffffff", margin: layoutMode === "mobile" ? "0 0 2px" : "0 0 4px",
             fontFamily: "var(--font-jakarta)",
             transform: "translateZ(22px)",
           }}>
             {domain.title}
           </h3>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px", transform: "translateZ(18px)" }}>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: layoutMode === "mobile" ? "8px" : "10px",
+            marginBottom: layoutMode === "mobile" ? "8px" : "12px",
+            transform: "translateZ(18px)",
+          }}>
             <span style={{
-              fontSize: "12px", fontWeight: 600, color: domain.color,
+              fontSize: layoutMode === "mobile" ? "11px" : "12px", fontWeight: 600, color: domain.color,
               fontFamily: "var(--font-jakarta)",
             }}>
               {domain.subtitle}
             </span>
             <span style={{ width: "3px", height: "3px", borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "inline-block" }} />
             <span style={{
-              fontSize: "12px", fontWeight: 500, color: "rgba(255,255,255,0.35)",
+              fontSize: layoutMode === "mobile" ? "11px" : "12px", fontWeight: 500, color: "rgba(255,255,255,0.35)",
               fontFamily: "var(--font-jakarta)",
             }}>
               {domain.skills.length} technologies
@@ -680,31 +702,34 @@ function DomainCard({
           </div>
 
           <p style={{
-            fontSize: "13.5px", lineHeight: 1.6, fontWeight: 400,
-            color: "rgba(255,255,255,0.52)", margin: "0 0 18px",
+            fontSize: layoutMode === "mobile" ? "12px" : "13.5px",
+            lineHeight: layoutMode === "mobile" ? 1.5 : 1.6,
+            fontWeight: 400,
+            color: "rgba(255,255,255,0.52)",
+            margin: layoutMode === "mobile" ? "0 0 12px" : "0 0 18px",
             fontFamily: "var(--font-jakarta)", maxWidth: "480px",
             transform: "translateZ(15px)",
           }}>
             {domain.description}
           </p>
 
-          <div style={{ marginBottom: "18px", transform: "translateZ(20px)", transformStyle: "preserve-3d" }}>
+          <div style={{ marginBottom: layoutMode === "mobile" ? "12px" : "18px", transform: "translateZ(20px)", transformStyle: "preserve-3d" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
               <span style={{
-                fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em",
+                fontSize: layoutMode === "mobile" ? "8.5px" : "10px", fontWeight: 700, letterSpacing: "0.12em",
                 textTransform: "uppercase", color: "rgba(255,255,255,0.28)",
                 fontFamily: "var(--font-jakarta)",
               }}>
                 Expertise Score
               </span>
               <span style={{
-                fontSize: "12px", fontWeight: 800, color: domain.color,
+                fontSize: layoutMode === "mobile" ? "11px" : "12px", fontWeight: 800, color: domain.color,
                 fontFamily: "var(--font-jakarta)",
               }}>
                 {domain.expertise}%
               </span>
             </div>
-            <div style={{ height: "4px", borderRadius: "999px", background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+            <div style={{ height: layoutMode === "mobile" ? "3px" : "4px", borderRadius: "999px", background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
               <motion.div
                 initial={{ width: 0 }}
                 whileInView={{ width: `${domain.expertise}%` }}
@@ -719,15 +744,16 @@ function DomainCard({
             </div>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", transform: "translateZ(15px)", transformStyle: "preserve-3d" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: layoutMode === "mobile" ? "4px" : "6px", transform: "translateZ(15px)", transformStyle: "preserve-3d" }}>
             {domain.preview.map((name) => (
               <span
                 key={name}
                 style={{
-                  fontSize: "11px", fontWeight: 600,
+                  fontSize: layoutMode === "mobile" ? "9.5px" : "11px",
+                  fontWeight: 600,
                   color: "rgba(255,255,255,0.50)",
                   fontFamily: "var(--font-jakarta)",
-                  padding: "3px 9px",
+                  padding: layoutMode === "mobile" ? "2.5px 7px" : "3px 9px",
                   borderRadius: "6px",
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.06)",
@@ -739,10 +765,11 @@ function DomainCard({
             ))}
             {domain.skills.length > domain.preview.length && !isOpen && (
               <span style={{
-                fontSize: "11px", fontWeight: 600,
+                fontSize: layoutMode === "mobile" ? "9.5px" : "11px",
+                fontWeight: 600,
                 color: domain.color,
                 fontFamily: "var(--font-jakarta)",
-                padding: "3px 9px",
+                padding: layoutMode === "mobile" ? "2.5px 7px" : "3px 9px",
                 borderRadius: "6px",
                 background: `rgba(${domain.colorRgb},0.08)`,
                 border: "1px solid rgba(${domain.colorRgb},0.15)",
@@ -771,25 +798,35 @@ function DomainCard({
                     transformStyle: "preserve-3d",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px", transform: "translateZ(12px)" }}>
-                    <Zap size={13} style={{ color: domain.color }} strokeWidth={2.5} />
+                  <div style={{
+                    display: "flex",
+                    flexDirection: layoutMode === "mobile" ? "column" : "row",
+                    alignItems: layoutMode === "mobile" ? "flex-start" : "center",
+                    gap: "8px",
+                    marginBottom: "16px",
+                    transform: "translateZ(12px)",
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <Zap size={12} style={{ color: domain.color }} strokeWidth={2.5} />
+                      <span style={{
+                        fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em",
+                        textTransform: "uppercase", color: domain.color,
+                        fontFamily: "var(--font-jakarta)",
+                      }}>
+                        Full Technology Stack
+                      </span>
+                    </div>
                     <span style={{
-                      fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em",
-                      textTransform: "uppercase", color: domain.color,
-                      fontFamily: "var(--font-jakarta)",
-                    }}>
-                      Full Technology Stack
-                    </span>
-                    <span style={{
-                      marginLeft: "auto",
-                      fontSize: "11px", fontWeight: 600,
+                      marginLeft: layoutMode === "mobile" ? "0" : "auto",
+                      fontSize: "10px", fontWeight: 600,
                       color: "rgba(255,255,255,0.45)",
                       fontFamily: "var(--font-jakarta)",
                       padding: "3px 9px",
                       borderRadius: "999px",
                       background: "rgba(255,255,255,0.04)",
                       border: "1px solid rgba(255,255,255,0.07)",
-                      whiteSpace: "nowrap",
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
                     }}>
                       ✦ {domain.highlight}
                     </span>
@@ -804,6 +841,7 @@ function DomainCard({
                         color={domain.color}
                         colorRgb={domain.colorRgb}
                         i={si}
+                        isMobile={layoutMode === "mobile"}
                       />
                     ))}
                   </div>
@@ -884,9 +922,16 @@ export default function Skills() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="section-header-spacing"
+          className={`section-header-spacing ${layoutMode === "mobile" ? "text-center flex flex-col items-center" : ""}`}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "18px" }}>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: layoutMode === "mobile" ? "center" : "flex-start",
+            gap: "10px",
+            marginBottom: "18px",
+            width: "100%",
+          }}>
             <div style={{ width: "20px", height: "1px", background: "rgba(255,255,255,0.2)" }} />
             <span style={{
               fontSize: "11px", fontWeight: 700, letterSpacing: "0.18em",
@@ -895,9 +940,21 @@ export default function Skills() {
             }}>
               Technical Expertise
             </span>
+            {layoutMode === "mobile" && (
+              <div style={{ width: "20px", height: "1px", background: "rgba(255,255,255,0.2)" }} />
+            )}
           </div>
 
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+          <div style={{
+            display: "flex",
+            flexDirection: layoutMode === "mobile" ? "column" : "row",
+            alignItems: layoutMode === "mobile" ? "center" : "flex-end",
+            justifyContent: layoutMode === "mobile" ? "center" : "space-between",
+            flexWrap: "wrap",
+            gap: "16px",
+            width: "100%",
+            textAlign: layoutMode === "mobile" ? "center" : "left",
+          }}>
             <h2 style={{
               fontSize: "clamp(2rem, 4vw, 3.2rem)",
               fontWeight: 800, letterSpacing: "-0.035em", lineHeight: 1.05,
@@ -917,6 +974,7 @@ export default function Skills() {
               fontSize: "14px", lineHeight: 1.65,
               color: "rgba(255,255,255,0.42)", margin: 0,
               fontFamily: "var(--font-jakarta)", maxWidth: "380px",
+              textAlign: layoutMode === "mobile" ? "center" : "left",
             }}>
               {layoutMode !== "mobile"
                 ? "Hover cards to browse stack. Click a card to focus & inspect full details."
@@ -940,6 +998,7 @@ export default function Skills() {
               justifyContent: "center",
               margin: "40px auto 0",
               overflow: "visible",
+              zIndex: openId !== null ? 50 : 1,
             }}
           >
             {/* Dark Backdrop for Focused Card */}
@@ -998,7 +1057,7 @@ export default function Skills() {
             <div
               style={{
                 position: "relative",
-                height: "320px",
+                height: "350px",
                 width: "100%",
                 perspective: "1200px",
                 transformStyle: "preserve-3d",
@@ -1007,6 +1066,7 @@ export default function Skills() {
                 justifyContent: "center",
                 margin: "32px auto 0",
                 overflow: "visible",
+                zIndex: openId !== null ? 50 : 1,
               }}
             >
               {/* Dark Backdrop for Focused Card */}

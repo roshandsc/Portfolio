@@ -31,12 +31,15 @@ export default function Philosophy() {
   const [activeNodeIndex, setActiveNodeIndex] = useState(0);
   const [hoveredNodeIndex, setHoveredNodeIndex] = useState<number | null>(null);
   const [dimensions, setDimensions] = useState({ rx: 340, ry: 90 });
+  const [isMobile, setIsMobile] = useState(false);
 
   // Handle responsive resize of orbital dimensions
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) {
-        setDimensions({ rx: 130, ry: 35 });
+      const mobile = window.innerWidth < 640;
+      setIsMobile(mobile);
+      if (mobile) {
+        setDimensions({ rx: 145, ry: 60 });
       } else if (window.innerWidth < 1024) {
         setDimensions({ rx: 220, ry: 60 });
       } else {
@@ -215,7 +218,7 @@ export default function Philosophy() {
 
           {/* Central Sun core */}
           <motion.div 
-            className="relative w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-purple-600/10 via-neutral-950 to-blue-600/10 border border-white/5 backdrop-blur-md flex flex-col items-center justify-center text-center shadow-[0_0_35px_rgba(139,92,246,0.12)] select-none z-20"
+            className="relative w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-purple-600/10 via-neutral-950 to-blue-600/10 border border-white/5 backdrop-blur-md flex flex-col items-center justify-center text-center shadow-[0_0_35px_rgba(139,92,246,0.12)] select-none z-20"
             animate={{
               boxShadow: ["0 0 25px rgba(139,92,246,0.1)", "0 0 45px rgba(14,165,233,0.2)", "0 0 25px rgba(139,92,246,0.1)"]
             }}
@@ -225,9 +228,9 @@ export default function Philosophy() {
               ease: "easeInOut"
             }}
           >
-            <Compass className="text-purple-400/80 animate-spin mb-1 opacity-70" style={{ animationDuration: "16s" }} size={16} />
-            <span className="text-[7px] font-extrabold uppercase tracking-widest text-neutral-500">Core Nucleus</span>
-            <span className="text-[10px] font-bold text-white mt-0.5 leading-tight uppercase font-sans">Engineering<br/>Mindset</span>
+            <Compass className="text-purple-400/80 animate-spin mb-1 opacity-70" style={{ animationDuration: "16s" }} size={isMobile ? 12 : 16} />
+            <span className={`${isMobile ? "text-[5.5px]" : "text-[7px]"} font-extrabold uppercase tracking-widest text-neutral-500`}>Core Nucleus</span>
+            <span className={`${isMobile ? "text-[8px]" : "text-[10px]"} font-bold text-white mt-0.5 leading-tight uppercase font-sans`}>Engineering<br/>Mindset</span>
           </motion.div>
 
           {/* Orbiting Planets */}
@@ -242,19 +245,22 @@ export default function Philosophy() {
             
             const isHighlighted = displayIndex === i;
             const IconComponent = node.icon;
+            
+            const nodeSize = isMobile ? 32 : 48;
+            const offset = nodeSize / 2;
 
             return (
               <motion.div
                 key={node.id}
                 className="absolute flex flex-col items-center justify-center"
                 style={{
-                  left: `calc(50% + ${x}px - 24px)`,
-                  top: `calc(50% + ${y}px - 24px)`,
+                  left: `calc(50% + ${x}px - ${offset}px)`,
+                  top: `calc(50% + ${y}px - ${offset}px)`,
                   zIndex: zIndex,
                   transform: `scale(${scale})`,
                   opacity: opacity,
-                  width: "48px",
-                  height: "48px"
+                  width: `${nodeSize}px`,
+                  height: `${nodeSize}px`
                 }}
                 onMouseEnter={() => {
                   setIsPaused(true);
@@ -269,8 +275,10 @@ export default function Philosophy() {
                 }}
               >
                 <div 
-                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg border cursor-pointer transition-all duration-300 relative group"
+                  className="rounded-full flex items-center justify-center shadow-lg border cursor-pointer transition-all duration-300 relative group"
                   style={{
+                    width: isMobile ? "24px" : "40px",
+                    height: isMobile ? "24px" : "40px",
                     background: `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08) 0%, rgba(10, 10, 15, 0.96) 80%, ${node.color}20 100%)`,
                     borderColor: isHighlighted ? node.color : "rgba(255, 255, 255, 0.06)",
                     boxShadow: isHighlighted 
@@ -279,7 +287,7 @@ export default function Philosophy() {
                   }}
                 >
                   <IconComponent 
-                    size={14} 
+                    size={isMobile ? 11 : 14} 
                     style={{ 
                       color: isHighlighted ? node.color : "rgba(255,255,255,0.5)",
                       transition: "color 0.3s ease" 
@@ -293,12 +301,14 @@ export default function Philosophy() {
                     />
                   )}
                 </div>
-                <span 
-                  className="text-[8px] font-bold text-neutral-400 truncate max-w-[70px] mt-1 transition-all text-center select-none"
-                  style={{ opacity: scale > 0.9 ? 1 : 0.3 }}
-                >
-                  {node.title}
-                </span>
+                {!isMobile && (
+                  <span 
+                    className="text-[8px] font-bold text-neutral-400 truncate max-w-[70px] mt-1 transition-all text-center select-none"
+                    style={{ opacity: scale > 0.9 ? 1 : 0.3 }}
+                  >
+                    {node.title}
+                  </span>
+                )}
               </motion.div>
             );
           })}

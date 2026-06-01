@@ -13,6 +13,7 @@ function PerspectiveGrid() {
   return (
     <div
       aria-hidden="true"
+      className="perspective-grid-bg"
       style={{
         position: "absolute",
         inset: 0,
@@ -565,6 +566,416 @@ export default function Hero() {
         </div>
       </div>
 
+      {/* ── MOBILE LAYOUT (320px - 480px) ────────────────── */}
+      <div
+        className="hero-mobile-layout"
+        style={{
+          position: "relative",
+          zIndex: 10,
+          width: "100%",
+          height: "100dvh",
+          display: "none",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "24px 16px 0px 16px",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* Top Area: Status, Heading, Description, CTA Buttons */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            marginTop: "env(safe-area-inset-top, 16px)",
+            zIndex: 30,
+          }}
+        >
+          {/* Status badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.05 }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              marginBottom: "8px",
+            }}
+          >
+            <span
+              style={{
+                width: "6px",
+                height: "6px",
+                borderRadius: "50%",
+                background: "#22c55e",
+                boxShadow: "0 0 8px #22c55e",
+                display: "inline-block",
+                animation: "heroStatusPulse 2s ease-in-out infinite",
+              }}
+            />
+            <span
+              style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "rgba(255,255,255,0.55)",
+                letterSpacing: "0.04em",
+                fontFamily: "var(--font-jakarta)",
+              }}
+            >
+              Open for Opportunities
+            </span>
+          </motion.div>
+
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            style={{
+              fontSize: "30px",
+              fontWeight: 800,
+              lineHeight: 1.1,
+              letterSpacing: "-0.03em",
+              color: "#ffffff",
+              margin: 0,
+              marginBottom: "8px",
+              fontFamily: "var(--font-jakarta)",
+              textAlign: "center",
+            }}
+          >
+            Building <span style={{ color: "#f7931e" }}>Intelligent</span>
+            <br />
+            Digital <span style={{ color: "#f7931e" }}>Products</span>
+          </motion.h1>
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            style={{
+              fontSize: "13px",
+              lineHeight: 1.5,
+              color: "rgba(255,255,255,0.75)",
+              margin: 0,
+              marginBottom: "16px",
+              fontFamily: "var(--font-jakarta)",
+              fontWeight: 400,
+              textAlign: "center",
+              maxWidth: "340px",
+            }}
+          >
+            Full Stack Developer &amp; AI/ML Engineer specializing in scalable web applications, AI-powered systems, machine learning solutions, and production software.
+          </motion.p>
+
+          {/* CTA Buttons Row */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "16px",
+              width: "100%",
+            }}
+          >
+            {/* PRIMARY — Let's Talk */}
+            <motion.a
+              href="#contact"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                height: "44px",
+                paddingLeft: "20px",
+                paddingRight: "20px",
+                borderRadius: "12px",
+                background: "#f7931e",
+                color: "#ffffff",
+                fontFamily: "var(--font-jakarta)",
+                fontWeight: 700,
+                fontSize: "13px",
+                textDecoration: "none",
+                border: "none",
+                cursor: "pointer",
+                boxShadow: "0 4px 16px rgba(247, 147, 30, 0.3)",
+              }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <MessageCircle size={14} strokeWidth={2.5} />
+              Let&apos;s Talk
+            </motion.a>
+
+            {/* SECONDARY — View Portfolio */}
+            <motion.a
+              href="#projects"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                height: "44px",
+                color: "rgba(255,255,255,0.75)",
+                fontFamily: "var(--font-jakarta)",
+                fontWeight: 600,
+                fontSize: "13px",
+                textDecoration: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
+              whileTap={{ scale: 0.98 }}
+            >
+              View Portfolio
+              <ArrowRight size={14} strokeWidth={2.5} />
+            </motion.a>
+          </motion.div>
+        </div>
+
+        {/* Center / Image Area */}
+        <div
+          style={{
+            flex: 1,
+            position: "relative",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
+          {/* Subtle Orange Glow behind image */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              bottom: "10%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "280px",
+              height: "280px",
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(247,147,30,0.18) 0%, transparent 70%)",
+              zIndex: 1,
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Centered Profile Image Wrapper */}
+          <div
+            style={{
+              position: "relative",
+              zIndex: 2,
+              width: "75vw",
+              height: "48dvh",
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              src="/roshan_transparent.png"
+              alt="Roshan Shetty"
+              fill
+              priority
+              sizes="75vw"
+              style={{
+                objectFit: "contain",
+                objectPosition: "bottom center",
+                userSelect: "none",
+              }}
+            />
+            {/* Smooth transition bottom fade to blend with background */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: "40px",
+                background: "linear-gradient(to top, #050505 15%, transparent 100%)",
+                zIndex: 3,
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* ── SIDE-BY-SIDE BADGES CONTAINER ── */}
+            <div
+              style={{
+                position: "absolute",
+                top: "-24px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "90vw",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "8px",
+                zIndex: 20,
+                pointerEvents: "none",
+              }}
+            >
+              {/* ── GREETING BUBBLE (Minimized) ── */}
+              <div className="mobile-bubble-float" style={{ width: "165px", pointerEvents: "none" }}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.25 }}
+                  style={{
+                    background: "#ffffff",
+                    borderRadius: "14px",
+                    padding: "8px 10px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+                    position: "relative",
+                    pointerEvents: "auto",
+                  }}
+                >
+                  {/* Avatar Icon */}
+                  <div
+                    style={{
+                      width: "28px",
+                      height: "28px",
+                      borderRadius: "50%",
+                      background: "linear-gradient(135deg, #f7931e, #ff6b35)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: 800,
+                        color: "#fff",
+                        fontFamily: "var(--font-jakarta)",
+                        lineHeight: 1,
+                      }}
+                    >
+                      R
+                    </span>
+                  </div>
+                  {/* Text */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        color: "#111111",
+                        fontFamily: "var(--font-jakarta)",
+                        lineHeight: 1.1,
+                      }}
+                    >
+                      Hi, I&apos;m Roshan
+                    </p>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "9px",
+                        fontWeight: 500,
+                        color: "#666666",
+                        fontFamily: "var(--font-jakarta)",
+                        lineHeight: 1.1,
+                      }}
+                    >
+                      Let&apos;s build great things
+                    </p>
+                  </div>
+                  {/* Speech Bubble Tail */}
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      bottom: "-6px",
+                      right: "24px",
+                      width: 0,
+                      height: 0,
+                      borderLeft: "6px solid transparent",
+                      borderRight: "6px solid transparent",
+                      borderTop: "6px solid #ffffff",
+                    }}
+                  />
+                </motion.div>
+              </div>
+
+              {/* ── PROFESSION CARD (Minimized) ── */}
+              <div className="mobile-card-float" style={{ width: "165px", pointerEvents: "none" }}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.35 }}
+                  style={{
+                    background: "rgba(15, 15, 20, 0.85)",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    borderRadius: "14px",
+                    padding: "8px 10px",
+                    backdropFilter: "blur(20px)",
+                    WebkitBackdropFilter: "blur(20px)",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    pointerEvents: "auto",
+                  }}
+                >
+                  {/* Icon */}
+                  <div
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "6px",
+                      background: "rgba(247,147,30,0.15)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Sparkles size={12} style={{ color: "#f7931e" }} strokeWidth={2.5} />
+                  </div>
+                  {/* Text */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        color: "#ffffff",
+                        fontFamily: "var(--font-jakarta)",
+                        lineHeight: 1.1,
+                      }}
+                    >
+                      AI/ML Engineer
+                    </p>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "9px",
+                        fontWeight: 500,
+                        color: "rgba(255,255,255,0.5)",
+                        fontFamily: "var(--font-jakarta)",
+                        lineHeight: 1.1,
+                      }}
+                    >
+                      Full Stack Dev
+                    </p>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       {/* ── MOBILE LAYOUT ──────────────────────────────────── */}
       <style>{`
         /* Pulse animation for status dot */
@@ -583,6 +994,30 @@ export default function Hero() {
           transform: translateX(4px);
         }
 
+        /* Floating animations for mobile cards */
+        @keyframes floatBubbleMobile {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
+        }
+        @keyframes floatCardMobile {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(4px); }
+        }
+        .mobile-bubble-float {
+          animation: floatBubbleMobile 5s ease-in-out infinite;
+        }
+        .mobile-card-float {
+          animation: floatCardMobile 5s ease-in-out infinite;
+        }
+
+        /* Default layout behavior */
+        .hero-desktop-grid {
+          display: grid !important;
+        }
+        .hero-mobile-layout {
+          display: none !important;
+        }
+
         /* ──── TABLET ──── */
         @media (max-width: 1100px) {
           .hero-desktop-grid {
@@ -591,7 +1026,7 @@ export default function Hero() {
           }
         }
 
-        /* ──── MOBILE ──── */
+        /* ──── TABLET / MEDIUM SCREENS ──── */
         @media (max-width: 768px) {
           .hero-desktop-grid {
             grid-template-columns: 1fr !important;
@@ -650,6 +1085,27 @@ export default function Hero() {
             bottom: 8% !important;
             transform: scale(0.8) !important;
             transform-origin: right bottom !important;
+          }
+        }
+
+        /* ──── STRICT MOBILE SCREENS ──── */
+        @media (max-width: 480px) {
+          #about {
+            height: 100dvh !important;
+            min-height: 100dvh !important;
+            max-height: 100dvh !important;
+          }
+
+          .perspective-grid-bg {
+            opacity: 0.12 !important;
+          }
+
+          .hero-desktop-grid {
+            display: none !important;
+          }
+
+          .hero-mobile-layout {
+            display: flex !important;
           }
         }
       `}</style>
